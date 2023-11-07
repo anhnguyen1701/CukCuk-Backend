@@ -31,7 +31,7 @@ namespace CukCuk.Infrastructure.Repository
             return result.ToList();
         }
 
-        public Employee GetById(Guid employeeId)
+        public Employee? GetById(Guid employeeId)
         {
 
             var sql = $"SELECT * FROM Employee WHERE EmployeeId = '{employeeId}'";
@@ -62,16 +62,18 @@ namespace CukCuk.Infrastructure.Repository
 
         public int Update(Employee employee, Guid employeeId)
         {
-            throw new NotImplementedException();
+            var sql = $"UPDATE Employee SET EmployeeCode = @EmployeeCode, FullName = @Fullname WHERE EmployeeId = '{employeeId}'";
+            var result = _conn.Execute(sql, employee);
+
+            return result;
         }
 
         public int Delete(Guid employeeId)
         {
-            // ket noi db
+            var sql = $"DELETE FROM Employee WHERE EmployeeId = '{employeeId}'";
+            var result = _conn.Execute(sql);
 
-            //xoa
-
-            throw new NotImplementedException();
+            return result;
         }
 
         public bool CheckDuplicateCode(string employeeCode)
@@ -81,6 +83,14 @@ namespace CukCuk.Infrastructure.Repository
 
             return result != null;
 
+        }
+
+        public bool isIdExist(Guid employeeId)
+        {
+            var sql = $"SELECT EmployeeId FROM Employee WHERE EmployeeId = '{employeeId}'";
+            var result = _conn.QuerySingleOrDefault<object>(sql);
+
+            return result != null;
         }
     }
 }

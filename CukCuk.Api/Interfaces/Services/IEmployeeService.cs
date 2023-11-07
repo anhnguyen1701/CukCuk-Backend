@@ -22,5 +22,11 @@ namespace CukCuk.Core.Interfaces.Services
         /// <param name="employee"></param>
         /// <returns></returns>
         int UpdateService(Guid employeeId, Employee employee);
+        /// <summary>
+        /// Xóa 1 nhân viên
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        int DeleteService(Guid employeeId);
     }
 }

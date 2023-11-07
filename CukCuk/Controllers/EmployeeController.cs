@@ -49,7 +49,7 @@ namespace CukCuk.Api.Controllers
                 employee.EmployeeId = Guid.NewGuid();
                 _employeeService.InsertService(employee);
 
-                return Ok(employee);
+                return Created("", new { devMsg = "", userMsg = "Thêm tành công", data = employee });
             }
             catch (EmployeeValidException ex)
             {
@@ -57,21 +57,39 @@ namespace CukCuk.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { devMsg = ex, userMsg = "Thêm thất bại", data = "" });
+                return StatusCode(500, new { devMsg = ex.Message, userMsg = "Lỗi hệ thống", data = "" });
             }
 
         }
 
-        [HttpPut]
+        [HttpPut("{employeeId}")]
         public IActionResult UpadteEmployee(Employee employee, Guid employeeId)
         {
-            return Ok();
+            try
+            {
+                // Validate
+                _employeeService.UpdateService(employeeId, employee);
+
+                return Ok(new { devMsg = "", userMsg = "Cập nhật thành công", data = employee });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { devMsg = ex.Message, userMsg = "Lỗi hệ thống", data = "" });
+            }
         }
 
-        [HttpDelete]
+        [HttpDelete("{employeeId}")]
         public IActionResult DeleteEmployee(Guid employeeId)
         {
-            return Ok();
+            try
+            {
+                var result = _employeeRepository.Delete(employeeId);
+                return Ok(new { devMsg = "", userMsg = "Xóa thành công", data = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { devMsg = ex.Message, userMsg = "Lỗi hệ thống", data = "" });
+            }
         }
     }
 }

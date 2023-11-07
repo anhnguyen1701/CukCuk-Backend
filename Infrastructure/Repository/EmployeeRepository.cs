@@ -45,7 +45,7 @@ namespace CukCuk.Infrastructure.Repository
         {
             var sql = $"INSERT INTO Employee(EmployeeId, EmployeeCode, FullName) VALUES (@EmployeeId, @EmployeeCode, @FullName)";
             DynamicParameters param = new DynamicParameters();
-            param.Add("@EmployeeId", Guid.NewGuid().ToString());
+            param.Add("@EmployeeId", employee.EmployeeId);
             param.Add("@EmployeeCode", employee.EmployeeCode);
             param.Add("@FullName", employee.FullName);
 
@@ -74,5 +74,13 @@ namespace CukCuk.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
+        public bool CheckDuplicateCode(string employeeCode)
+        {
+            var sql = $"SELECT EmployeeCode FROM Employee WHERE EmployeeCode = '{employeeCode}'";
+            var result = _conn.QueryFirstOrDefault<Employee>(sql);
+
+            return result != null;
+
+        }
     }
 }

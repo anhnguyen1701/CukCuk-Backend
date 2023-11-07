@@ -1,5 +1,7 @@
 ﻿using CukCuk.Core.Entities;
 using CukCuk.Core.Exceptions;
+using CukCuk.Core.Interfaces.Infrastructure;
+using CukCuk.Core.Interfaces.Services;
 using CukCuk.Core.Services;
 using CukCuk.Infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +13,20 @@ namespace CukCuk.Api.Controllers
     [ApiController]
     public class EmployeeController : Controller
     {
+        IEmployeeRepository _employeeRepository;
+        IEmployeeService _employeeService;
+
+        public EmployeeController(IEmployeeRepository employeeRepository, IEmployeeService employeeService)
+        {
+            _employeeRepository = employeeRepository;
+            _employeeService = employeeService;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
             // Get data
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var employees = employeeRepository.GetAll();
+            var employees = _employeeRepository.GetAll();
 
             return Ok(employees);
         }
@@ -25,8 +35,7 @@ namespace CukCuk.Api.Controllers
         public IActionResult GetById(Guid employeeId)
         {
             // Get data
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var employee = employeeRepository.GetById(employeeId);
+            var employee = _employeeRepository.GetById(employeeId);
 
             return Ok(employee);
         }
@@ -37,12 +46,8 @@ namespace CukCuk.Api.Controllers
             try
             {
                 // Validate
-                EmployeeService employeeService = new EmployeeService();
-                employeeService.InsertService(employee);
-
-                // Insert data to DB
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var result = employeeRepository.Insert(employee);
+                employee.EmployeeId = Guid.NewGuid();
+                _employeeService.InsertService(employee);
 
                 return Ok(employee);
             }

@@ -15,6 +15,6 @@ namespace CukCuk.Core.Interfaces.Infrastructure
         int Update(Employee employee, Guid employeeId);
         int Delete(Guid employeeId);
         IEnumerable<Employee> GetPaging(int pageSize, int pageIndex);
-
+        bool CheckDuplicateCode(string employeeCode);
     }
 }
